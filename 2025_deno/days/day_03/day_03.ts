@@ -10,14 +10,23 @@ export default function run(input: string){
     lines.forEach(line => {
         if (line === "") return;
         const joltages  = line.split("").map(num => Number(num));
-        const fI = findHighestJoltageIndex(joltages, 0, joltages.length-1);
-        const sI = findHighestJoltageIndex(joltages, fI+1, joltages.length);
-        result += Number(`${joltages[fI]}${joltages[sI]}`);
+        let indexes = [];
+        let lastIndex = -1;
+        for (let i = 11; i >= 0; i--) {
+            lastIndex = findHighestJoltageIndex(joltages, lastIndex+1, joltages.length-i);
+            indexes.push(lastIndex);
+
+        }
+       const concated = indexes.reduce((acc, index) =>{
+           return `${acc}${joltages[index]}`;
+       }, "")
+        result += Number(concated);
     })
     return "Final Result: " + result;
 }
 
 function findHighestJoltageIndex(joltages: number[], minIndex: number, maxIndex): number {
-    const maxJoltage = Math.max(...joltages.slice(minIndex, maxIndex));
-    return joltages.findIndex(x => x === maxJoltage);
+    const slice  = joltages.slice(minIndex, maxIndex)
+    const maxJoltage = Math.max(...slice);
+    return slice.findIndex(x => x === maxJoltage)+ minIndex;
 }
