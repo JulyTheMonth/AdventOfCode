@@ -29,11 +29,11 @@ export default function run(input: string) {
   }
   sortedPairs.sort((a, b) => a.length - b.length);
 
-  const amountOfPairs = 1000;
+  // const amountOfPairs = 1000;
 
   const trees: Set<VectorTree> = new Set<VectorTree>();
-
-  for (let i = 0; i < amountOfPairs; i++) {
+  let lastPair:VectorPair;
+  for (let i = 0; i < sortedPairs.length; i++) {
     const vectorPair = sortedPairs[i];
     const foundEntries = [...trees].filter((entre) =>
       entre.vectors.has(vectorPair.v1) ||
@@ -58,15 +58,20 @@ export default function run(input: string) {
         vecTree.vectorPairs = vecTree.vectorPairs.union(vecTreeToReplace.vectorPairs).union(new Set([vectorPair]));
         trees.delete(vecTreeToReplace);
     }
+    if(trees.size == 1 && [...trees][0].vectors.size == vectors.length){
+        console.log("Tree fullfilled");
+        lastPair = vectorPair;
+        result = vectorPair.v1[0] * vectorPair.v2[0];
+    }
   }
 
 
-  const sorted = [...trees].sort((t1,t2)=> t2.vectors.size - t1.vectors.size).slice(0,3);
+  // const sorted = [...trees].sort((t1,t2)=> t2.vectors.size - t1.vectors.size).slice(0,3);
 
-  result = sorted.reduce((r,t)=>r*t.vectors.size,1)
+  // result = sorted.reduce((r,t)=>r*t.vectors.size,1)
 
-  console.log(sortedPairs);
-  console.log(sorted);
+  console.log(trees);
+  // console.log(sorted);
 
   return "Final Result: " + result;
 }
